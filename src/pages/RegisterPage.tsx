@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { /*Link,*/ useNavigate } from "react-router-dom";
-//import axios from "axios";
+import api from "../services/api";
 
 interface FormErrors {
     nome: string;
@@ -149,22 +149,35 @@ const RegisterPage: React.FC = () => {
         return valid;
     };
 
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!validateForm()) return;
 
         const registerData = {
-            nome,
-            cpf,
-            email,
-            telefone,
+            nome: nome.trim(),
+            cpf: cpf.replace(/\D/g, ""),
+            email: email.trim(),
+            telefone: telefone.replace(/\D/g, ""),
         };
 
-        console.log(registerData);
+        try {
+            const response = await api.post("/register/check", registerData);
 
-        // Futuramente:
-        // await axios.post("/api/register", registerData);
+            console.log("Resposta do Laravel:", response.data);
+
+            // Próxima etapa:
+            // navegar para a página de criação de senha
+
+        } catch (error: any) {
+            console.error("Erro ao verificar cadastro:", error);
+
+            if (error.response?.status === 422) {
+                console.log("Dados inválidos:", error.response.data);
+            } else {
+                console.log("Erro de comunicação com o servidor.");
+            }
+        }
     };
 
     return (
