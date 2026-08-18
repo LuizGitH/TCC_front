@@ -166,17 +166,15 @@ const RegisterPage: React.FC = () => {
 
             console.log("Resposta do Laravel:", response.data);
 
-            // Próxima etapa:
-            // navegar para a página de criação de senha
-
-        } catch (error: any) {
+            navigate("/registro", {
+                state: {
+                    registerData,
+                },
+            });
+        } catch (error: unknown) {
             console.error("Erro ao verificar cadastro:", error);
 
-            if (error.response?.status === 422) {
-                console.log("Dados inválidos:", error.response.data);
-            } else {
-                console.log("Erro de comunicação com o servidor.");
-            }
+            console.log("Erro de comunicação com o servidor.");
         }
     };
 
