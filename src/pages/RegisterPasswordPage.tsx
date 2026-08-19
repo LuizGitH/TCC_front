@@ -31,6 +31,8 @@ const RegisterPasswordPage: React.FC = () => {
     const [mostrarSenha, setMostrarSenha] = useState(false);
     const [mostrarConfirmarSenha, setMostrarConfirmarSenha] = useState(false);
 
+    const [cadastroSucesso, setCadastroSucesso] = useState(false);
+
     const [errors, setErrors] = useState<FormErrors>({
         senha: "",
         confirmarSenha: "",
@@ -95,22 +97,49 @@ const RegisterPasswordPage: React.FC = () => {
             password_confirmation: confirmarSenha,
         };
 
-        console.log("Dados completos do cadastro:", finalRegisterData);
+        try {
+            const response = await api.post("/register", finalRegisterData);
 
-        // Futuramente, quando a API Laravel estiver pronta:
-        //
-        // try {
-        //     const response = await api.post("/register", finalRegisterData);
-        //
-        //     console.log("Resposta do Laravel:", response.data);
-        //
-        //     navigate("/login");
-        // } catch (error: unknown) {
-        //     console.error("Erro ao criar conta:", error);
-        // }
+            console.log("Resposta do Laravel:", response.data);
 
-        // Por enquanto, apenas exibe os dados no console.
+            setCadastroSucesso(true);
+
+            setTimeout(() => {
+                navigate("/login");
+            }, 2000);
+        } catch (error: any) {
+            console.error("Erro ao criar conta:", error);
+
+            if (error.response?.status === 422) {
+                console.error(
+                    "Erros de validação:",
+                    error.response.data.errors
+                );
+            } else {
+                console.error(
+                    "Não foi possível criar a conta. Tente novamente."
+                );
+            }
+        }
     };
+
+    if (cadastroSucesso) {
+        return (
+            <div className="min-h-screen bg-blue-50 flex items-center justify-center px-4">
+                <div className="w-full max-w-md rounded-2xl bg-white p-10 text-center shadow-lg">
+                    <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full bg-green-500">
+                        <span className="text-3xl font-bold text-white">
+                            ✓
+                        </span>
+                    </div>
+
+                    <h2 className="text-lg font-semibold text-gray-800">
+                        Conta criada com sucesso.
+                    </h2>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-blue-50 px-4 py-6 sm:py-10">
@@ -180,11 +209,10 @@ const RegisterPasswordPage: React.FC = () => {
                                         aria-describedby={
                                             errors.senha ? "senha-error" : undefined
                                         }
-                                        className={`w-full rounded-lg border bg-gray-100 px-4 py-2.5 pr-12 text-sm outline-none transition ${
-                                            errors.senha
-                                                ? "border-red-500 focus:ring-2 focus:ring-red-300"
-                                                : "border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                        }`}
+                                        className={`w-full rounded-lg border bg-gray-100 px-4 py-2.5 pr-12 text-sm outline-none transition ${errors.senha
+                                            ? "border-red-500 focus:ring-2 focus:ring-red-300"
+                                            : "border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                            }`}
                                     />
 
                                     <button
@@ -231,11 +259,10 @@ const RegisterPasswordPage: React.FC = () => {
                                                 ? "confirmarSenha-error"
                                                 : undefined
                                         }
-                                        className={`w-full rounded-lg border bg-gray-100 px-4 py-2.5 pr-12 text-sm outline-none transition ${
-                                            errors.confirmarSenha
-                                                ? "border-red-500 focus:ring-2 focus:ring-red-300"
-                                                : "border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
-                                        }`}
+                                        className={`w-full rounded-lg border bg-gray-100 px-4 py-2.5 pr-12 text-sm outline-none transition ${errors.confirmarSenha
+                                            ? "border-red-500 focus:ring-2 focus:ring-red-300"
+                                            : "border-transparent focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                                            }`}
                                     />
 
                                     <button
