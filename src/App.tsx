@@ -6,6 +6,7 @@ import LoginPage from "./pages/LoginPage"
 import RegisterPage from "./pages/RegisterPage"
 import NotFoundPage from "./pages/NotFoundPage"
 import RegisterPasswordPage from "./pages/RegisterPasswordPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 function App() {
 
@@ -17,6 +18,8 @@ function App() {
         <Route path="/cadastro" element={<RegisterPage />} />
         <Route path="/registro" element={<RegisterPasswordPage />} />
         <Route path="*" element={<NotFoundPage />} />
+        <Route path="/recuperar-senha" element={<ForgotPasswordPage />}
+/>
       </Routes>
     </Router>
   )
